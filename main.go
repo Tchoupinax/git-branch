@@ -28,24 +28,24 @@ func clearTerminal() {
 	fmt.Print("\033[H\033[2J") // Clear the terminal
 }
 
-func criteria(r *plumbing.Reference, isRemote bool, isTag bool) bool {
+func criteria(r *plumbing.Reference, isRemote bool, isTag bool, displayAll bool) bool {
 	if strings.Contains(string(r.Name()), "HEAD") {
 		return false
 	}
 
-	if isRemote && isTag {
-		return r.Name().IsRemote() && r.Name().IsTag()
+	if displayAll {
+		return true
 	}
 
 	if isRemote {
-		return r.Name().IsRemote() || !r.Name().IsRemote()
+		return r.Name().IsRemote()
 	}
 
 	if isTag {
 		return r.Name().IsTag()
 	}
 
-	return !r.Name().IsRemote()
+	return !r.Name().IsRemote() && !r.Name().IsTag()
 }
 
 func stringInSlice(a string, list []string) bool {
@@ -72,7 +72,11 @@ func main() {
 	branches := []string{}
 	refIter, _ := r.References()
 	refIter.ForEach(func(r *plumbing.Reference) error {
-		if criteria(r, stringInSlice("-a", os.Args[1:]), false) {
+		var displayAll = stringInSlice("-a", os.Args[1:]) || stringInSlice("--all", os.Args[1:])
+		var displayRemoteBranches = stringInSlice("-r", os.Args[1:])
+		var displayTags = stringInSlice("-t", os.Args[1:])
+
+		if criteria(r, displayRemoteBranches, displayTags, displayAll) {
 			branches = append(branches, r.Name().Short())
 		}
 
@@ -82,20 +86,50 @@ func main() {
 	bold := color.New(color.Bold).SprintFunc()
 	yellow := color.New(color.Bold, color.FgYellow).SprintFunc()
 	blue := color.New(color.Bold, color.FgBlue).SprintFunc()
+	red := color.New(color.Italic, color.FgRed).SprintFunc()
+	fmt.Println("")
 	fmt.Println(bold("⚡️ Git branch"))
 	fmt.Println("")
 
 	var count = 1
 	for _, v := range branches {
 		if count%2 == 0 {
-			fmt.Println(blue(count, " ", v))
+			fmt.Println(blue(count, "  ", v))
 		} else {
-			fmt.Println(yellow(count, " ", v))
+			fmt.Println(yellow(count, "  ", v))
 		}
 
 		count = count + 1
 	}
 
+	worktree, _ := r.Worktree()
+
+	var isTheFirstArgumentIsANumber = isNumeric(os.Args[1])
+	var desiredBranchNumber int
+	if isTheFirstArgumentIsANumber {
+		tmpNumber, _ := strconv.Atoi(os.Args[1])
+		desiredBranchNumber = tmpNumber - 1
+	} else {
+		desiredBranchNumber = chooseBranchNumber()
+	}
+
+	desiredBranch := branches[desiredBranchNumber]
+
+	error := worktree.Checkout(&git.CheckoutOptions{
+		Branch: plumbing.NewBranchReferenceName(desiredBranch),
+	})
+
+	clearTerminal()
+
+	fmt.Println(red(error))
+	fmt.Println("")
+
+	purple := color.New(color.Bold, color.FgHiMagenta).SprintFunc()
+	fmt.Println(purple("Checkout the branch ", desiredBranch, "!"))
+}
+
+func chooseBranchNumber() int {
+	bold := color.New(color.Bold).SprintFunc()
 	fmt.Println()
 	fmt.Print(bold("✏️  Choose a branch : "))
 
@@ -111,21 +145,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	worktree, _ := r.Worktree()
 	intVar, _ := strconv.Atoi(input)
-	desiredBranch := branches[intVar-1]
-
-	fmt.Println(desiredBranch, plumbing.NewBranchReferenceName(desiredBranch))
-
-	error := worktree.Checkout(&git.CheckoutOptions{
-		Branch: plumbing.NewBranchReferenceName(desiredBranch),
-	})
-
-	fmt.Println(error)
-
-	purple := color.New(color.Bold, color.FgHiMagenta).SprintFunc()
-	// clearTerminal()
-	fmt.Println(purple("Checkout the branch ", desiredBranch, "!"))
+	return intVar - 1
 }
 
 func read() string {
@@ -151,6 +172,7 @@ func read() string {
 
 		if char == 0 && key == 3 { // Ctrl + C
 			keyboard.Close()
+			fmt.Println("")
 
 			os.Exit(0)
 		}

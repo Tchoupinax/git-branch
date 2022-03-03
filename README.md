@@ -16,3 +16,11 @@ brew install tchoupinax/gb
 ## Usage
 
 Go in a git repository and type `gb` :). The list of all branches will appear, you can then swith to one by typing the number at the start of the line.
+
+## Development
+
+```
+npx nodemon -e go  --exec "go build -o main *.go"
+---
+main
+```

@@ -20,7 +20,7 @@ Go in a git repository and type `gb` :). The list of all branches will appear, y
 ## Development
 
 ```
-npx nodemon -e go  --exec "go build -o main *.go"
+npx nodemon -e go  --exec "go build -o main *.go || exit 1"
 ---
 main
 ```

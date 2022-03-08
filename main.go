@@ -14,15 +14,17 @@ import (
 )
 
 func main() {
-	path, _ := os.Getwd()
+	rootpath := getGitRootPath()
 
-	r, err := git.PlainOpenWithOptions(path, &git.PlainOpenOptions{})
-	if err != nil {
+	if rootpath == "" {
 		red := color.New(color.Bold, color.BgHiRed).SprintFunc()
-		fmt.Println(red(path, " ", "is not a git repository :/"))
+		currentPath, _ := os.Getwd()
+		fmt.Println(red(currentPath, " ", "is not a git repository :/"))
 
 		os.Exit(1)
 	}
+
+	r, _ := git.PlainOpenWithOptions(rootpath, &git.PlainOpenOptions{})
 
 	ClearTerminal()
 	branches := []Branch{}

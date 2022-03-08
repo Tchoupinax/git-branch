@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os/exec"
 	"strconv"
 	"strings"
 
@@ -60,4 +61,15 @@ func Criteria(r *plumbing.Reference, isRemote bool, isTag bool, displayAll bool)
 	}
 
 	return !r.Name().IsRemote() && !r.Name().IsTag()
+}
+
+func getGitRootPath() string {
+	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	stdout, err := cmd.Output()
+
+	if err != nil {
+		return ""
+	}
+
+	return strings.TrimSpace(string(stdout))
 }

@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"sort"
 	"strconv"
 	"sync"
 
 	timeago "github.com/caarlos0/timea.go"
-	"github.com/eiannone/keyboard"
 	"github.com/fatih/color"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -62,6 +63,10 @@ func main() {
 		}
 	}
 
+	sort.Slice(branches, func(i, j int) bool {
+		return branches[i].commitedAt.After(branches[j].commitedAt)
+	})
+
 	var isTheFirstArgumentIsANumber = (len(os.Args) > 1 && IsNumeric(os.Args[1])) || (len(os.Args) > 2 && (IsNumeric(os.Args[2])))
 
 	bold := color.New(color.Bold).SprintFunc()
@@ -87,8 +92,6 @@ func main() {
 		}
 	}
 
-	worktree, _ := r.Worktree()
-
 	var desiredBranchNumber int
 	if isTheFirstArgumentIsANumber {
 		tmpNumber, err := strconv.Atoi(os.Args[1])
@@ -98,78 +101,28 @@ func main() {
 
 		desiredBranchNumber = tmpNumber - 1
 	} else {
-		desiredBranchNumber = chooseBranchNumber()
+		desiredBranchNumber = ChooseBranchNumber()
 	}
 
-	desiredBranch := branches[desiredBranchNumber]
-	error := worktree.Checkout(&git.CheckoutOptions{
-		Branch: plumbing.NewBranchReferenceName(desiredBranch.name),
-	})
+	if desiredBranchNumber > len(branches)-1 || desiredBranchNumber == -1 {
+		fmt.Println(red("Please choose a number between 1 and ", len(branches)))
 
-	ClearTerminal()
-
-	if error != nil {
-		fmt.Println(red(error))
-		fmt.Println("")
-	}
-
-	purple := color.New(color.Bold, color.FgHiMagenta).SprintFunc()
-	fmt.Println(purple("Checkout the branch ", desiredBranch.name, "!"))
-}
-
-func chooseBranchNumber() int {
-	bold := color.New(color.Bold).SprintFunc()
-	fmt.Println()
-	fmt.Print(bold("✏️  Choose a branch : "))
-
-	input := read()
-	fmt.Println()
-
-	if !IsNumeric(input) {
-		fmt.Println()
-		red := color.New(color.Bold, color.BgHiRed).SprintFunc()
-		fmt.Printf(red("you should type a number"))
-
-		fmt.Println()
 		os.Exit(1)
 	}
 
-	intVar, _ := strconv.Atoi(input)
-	return intVar - 1
-}
+	desiredBranch := branches[desiredBranchNumber]
 
-func read() string {
-	var input string
+	// worktree, _ := r.Worktree()
+	// error := worktree.Checkout(&git.CheckoutOptions{
+	// 	Branch: plumbing.NewBranchReferenceName(desiredBranch.name),
+	// })
 
-	if err := keyboard.Open(); err != nil {
-		panic(err)
-	}
+	// Temporary reclacement of the native command
+	cmd := exec.Command("git", "checkout", desiredBranch.name)
+	cmd.Output()
 
-	defer func() {
-		_ = keyboard.Close()
-	}()
+	ClearTerminal()
 
-	for {
-		char, key, err := keyboard.GetKey()
-		if err != nil {
-			panic(err)
-		}
-
-		if key == keyboard.KeyEnter {
-			break
-		}
-
-		if char == 0 && key == 3 { // Ctrl + C
-			keyboard.Close()
-			fmt.Println("")
-
-			os.Exit(0)
-		}
-
-		fmt.Printf("%s", string(char))
-		input = fmt.Sprintf("%s%s", input, string(char))
-
-	}
-
-	return input
+	purple := color.New(color.Bold, color.FgHiMagenta).SprintFunc()
+	fmt.Println(purple("Checkout the branch ", desiredBranch.name, "!"))
 }

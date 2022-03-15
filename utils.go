@@ -1,11 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 
+	"github.com/eiannone/keyboard"
+	"github.com/fatih/color"
 	"github.com/go-git/go-git/v5/plumbing"
 )
 
@@ -72,4 +76,61 @@ func getGitRootPath() string {
 	}
 
 	return strings.TrimSpace(string(stdout))
+}
+
+func ChooseBranchNumber() int {
+	bold := color.New(color.Bold).SprintFunc()
+	fmt.Println()
+	fmt.Print(bold("✏️  Choose a branch : "))
+
+	input := read()
+	fmt.Println()
+
+	if !IsNumeric(input) {
+		fmt.Println()
+		red := color.New(color.Bold, color.BgHiRed).SprintFunc()
+		fmt.Printf(red("you should type a number"))
+
+		fmt.Println()
+		os.Exit(1)
+	}
+
+	intVar, _ := strconv.Atoi(input)
+	return intVar - 1
+}
+
+func read() string {
+	var input string
+
+	if err := keyboard.Open(); err != nil {
+		panic(err)
+	}
+
+	defer func() {
+		_ = keyboard.Close()
+	}()
+
+	for {
+		char, key, err := keyboard.GetKey()
+		if err != nil {
+			panic(err)
+		}
+
+		if key == keyboard.KeyEnter {
+			break
+		}
+
+		if char == 0 && key == 3 { // Ctrl + C
+			keyboard.Close()
+			fmt.Println("")
+
+			os.Exit(0)
+		}
+
+		fmt.Printf("%s", string(char))
+		input = fmt.Sprintf("%s%s", input, string(char))
+
+	}
+
+	return input
 }

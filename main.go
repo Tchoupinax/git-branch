@@ -15,6 +15,9 @@ import (
 )
 
 func main() {
+	// Check if the version is asked by flag
+	cliCommandDisplayVersion(os.Args)
+
 	rootpath := getGitRootPath()
 
 	if rootpath == "" {

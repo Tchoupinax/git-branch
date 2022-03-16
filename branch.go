@@ -22,8 +22,14 @@ func (b *Branch) GetCommitterDateFromLogs() {
 
 	for index, match := range re.FindAllString(string(stdout), -1) {
 		if index == 0 {
-			var a = strings.Split(match, " +")[0]
+			a := strings.Split(match, " +")[0]
+
+			if strings.Contains(a, " -") {
+				a = strings.Split(match, " -")[0]
+			}
+
 			var c = strings.Split(a, "Date:   ")
+
 			t, err := time.Parse(time.ANSIC, c[1])
 
 			if err != nil {

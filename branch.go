@@ -36,7 +36,8 @@ func (b *Branch) GetCommitterDateFromLogs() {
 				fmt.Println(err)
 			}
 
-			b.commitedAt = t.Add(-time.Hour * 1)
+			// *1 in winter and *2 in summer... >.<
+			b.commitedAt = t.Add(-time.Hour * 2)
 		}
 	}
 }

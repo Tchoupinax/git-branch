@@ -7,8 +7,8 @@ import (
 	"github.com/fatih/color"
 )
 
-const Version string = "0.0.7"
-const BuildDate string = "2022-03-16"
+const Version string = "0.0.8"
+const BuildDate string = "2022-04-02"
 
 func cliCommandDisplayVersion(args []string) {
 	displayVersion := StringInSlice("-v", args[1:]) || StringInSlice("--version", args[1:])

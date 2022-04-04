@@ -82,13 +82,18 @@ func main() {
 		fmt.Println("")
 
 		var count = 1
-		for _, branch := range branches {
+		for branchIndex, branch := range branches {
 			s := timeago.Of(branch.commitedAt)
 
+			space := " "
+			if branchIndex < 9 {
+				space = "  "
+			}
+
 			if count%2 == 0 {
-				fmt.Println(blue(count, "  ", branch.name, GenerateSpace(lengthOfGreatestBranchLength-len(branch.name)), "       (", s, ")"))
+				fmt.Println(blue(count, space, branch.name, GenerateSpace(lengthOfGreatestBranchLength-len(branch.name)), "       (", s, ")"))
 			} else {
-				fmt.Println(yellow(count, "  ", branch.name, GenerateSpace(lengthOfGreatestBranchLength-len(branch.name)), "       (", s, ")"))
+				fmt.Println(yellow(count, space, branch.name, GenerateSpace(lengthOfGreatestBranchLength-len(branch.name)), "       (", s, ")"))
 			}
 
 			count = count + 1

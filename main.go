@@ -82,7 +82,7 @@ func main() {
 		fmt.Println("")
 
 		var count = 1
-		for branchIndex, branch := range branches {
+		for branchIndex, branch := range branches[:10] {
 			s := timeago.Of(branch.commitedAt)
 
 			space := " "

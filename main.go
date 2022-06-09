@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	math "math"
 	"os"
 	"os/exec"
 	"sort"
@@ -82,7 +83,7 @@ func main() {
 		fmt.Println("")
 
 		var count = 1
-		for branchIndex, branch := range branches[:10] {
+		for branchIndex, branch := range branches[:int(math.Min(float64(len(branches)), 10))] {
 			s := timeago.Of(branch.commitedAt)
 
 			space := " "

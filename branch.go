@@ -6,16 +6,19 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	timeago "github.com/caarlos0/timea.go"
 )
 
 type Branch struct {
-	name       string
-	hash       string
-	commitedAt time.Time
+	Name              string
+	Hash              string
+	CommitedAt        time.Time
+	CommitedAtTimeAgo string
 }
 
 func (b *Branch) GetCommitterDateFromLogs() {
-	cmd := exec.Command("git", "show", b.name)
+	cmd := exec.Command("git", "show", b.Name)
 	stdout, _ := cmd.Output()
 
 	var re = regexp.MustCompile(`(?m)Date:.*`)
@@ -37,7 +40,9 @@ func (b *Branch) GetCommitterDateFromLogs() {
 			}
 
 			// *1 in winter and *2 in summer... >.<
-			b.commitedAt = t.Add(-time.Hour * 2)
+			b.CommitedAt = t.Add(-time.Hour * 2)
+
+			b.CommitedAtTimeAgo = timeago.Of(b.CommitedAt)
 		}
 	}
 }

@@ -2,14 +2,12 @@ package main
 
 import (
 	"fmt"
-	math "math"
 	"os"
 	"os/exec"
 	"sort"
 	"strconv"
 	"sync"
 
-	timeago "github.com/caarlos0/timea.go"
 	"github.com/fatih/color"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -41,7 +39,7 @@ func main() {
 		var displayTags = StringInSlice("-t", os.Args[1:])
 
 		if Criteria(r, displayRemoteBranches, displayTags, displayAll) {
-			branches = append(branches, Branch{name: r.Name().Short(), hash: r.Hash().String()})
+			branches = append(branches, Branch{Name: r.Name().Short(), Hash: r.Hash().String()})
 		}
 
 		return nil
@@ -62,43 +60,22 @@ func main() {
 
 	var lengthOfGreatestBranchLength = 0
 	for _, branch := range branches {
-		if len(branch.name) > lengthOfGreatestBranchLength {
-			lengthOfGreatestBranchLength = len(branch.name)
+		if len(branch.Name) > lengthOfGreatestBranchLength {
+			lengthOfGreatestBranchLength = len(branch.Name)
 		}
 	}
 
 	sort.Slice(branches, func(i, j int) bool {
-		return branches[i].commitedAt.After(branches[j].commitedAt)
+		return branches[i].CommitedAt.After(branches[j].CommitedAt)
 	})
 
 	var isTheFirstArgumentIsANumber = (len(os.Args) > 1 && IsNumeric(os.Args[1])) || (len(os.Args) > 2 && (IsNumeric(os.Args[2])))
 
 	bold := color.New(color.Bold).SprintFunc()
-	yellow := color.New(color.Bold, color.FgYellow).SprintFunc()
-	blue := color.New(color.Bold, color.FgBlue).SprintFunc()
 	red := color.New(color.Italic, color.FgRed).SprintFunc()
 	if !isTheFirstArgumentIsANumber {
 		fmt.Println("")
 		fmt.Println(bold("⚡️ Git branch"))
-		fmt.Println("")
-
-		var count = 1
-		for branchIndex, branch := range branches[:int(math.Min(float64(len(branches)), 10))] {
-			s := timeago.Of(branch.commitedAt)
-
-			space := " "
-			if branchIndex < 9 {
-				space = "  "
-			}
-
-			if count%2 == 0 {
-				fmt.Println(blue(count, space, branch.name, GenerateSpace(lengthOfGreatestBranchLength-len(branch.name)), "       (", s, ")"))
-			} else {
-				fmt.Println(yellow(count, space, branch.name, GenerateSpace(lengthOfGreatestBranchLength-len(branch.name)), "       (", s, ")"))
-			}
-
-			count = count + 1
-		}
 	}
 
 	var desiredBranchNumber int
@@ -110,7 +87,7 @@ func main() {
 
 		desiredBranchNumber = tmpNumber - 1
 	} else {
-		desiredBranchNumber = ChooseBranchNumber()
+		desiredBranchNumber = ChooseBranchNumber(branches)
 	}
 
 	if desiredBranchNumber > len(branches)-1 || desiredBranchNumber == -1 {
@@ -127,11 +104,11 @@ func main() {
 	// })
 
 	// Temporary reclacement of the native command
-	cmd := exec.Command("git", "checkout", desiredBranch.name)
+	cmd := exec.Command("git", "checkout", desiredBranch.Name)
 	cmd.Output()
 
 	ClearTerminal()
 
 	purple := color.New(color.Bold, color.FgHiMagenta).SprintFunc()
-	fmt.Println(purple("Checkout the branch ", desiredBranch.name, "!"))
+	fmt.Println(purple("Checkout the branch ", desiredBranch.Name, "!"))
 }

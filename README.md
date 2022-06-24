@@ -6,6 +6,12 @@
 
 The tool is available for all platforms (Linux, macOS, Windows) on this [page](https://github.com/Tchoupinax/git-branch/releases). You can also use your favorite package manager to easily install and update `git-branch`.
 
+### Linux
+
+```
+curl https://raw.githubusercontent.com/Tchoupinax/git-branch/master/scripts/installation-linux.sh | bash
+```
+
 ### macOS
 
 ```

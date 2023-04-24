@@ -77,6 +77,7 @@ func main() {
 	yellow := color.New(color.Bold, color.FgYellow).SprintFunc()
 	blue := color.New(color.Bold, color.FgBlue).SprintFunc()
 	red := color.New(color.Italic, color.FgRed).SprintFunc()
+
 	if !isTheFirstArgumentIsANumber {
 		fmt.Println("")
 		fmt.Println(bold("⚡️ Git branch"))
@@ -110,7 +111,7 @@ func main() {
 
 		desiredBranchNumber = tmpNumber - 1
 	} else {
-		desiredBranchNumber = ChooseBranchNumber()
+		desiredBranchNumber = ChooseBranchNumber("")
 	}
 
 	if desiredBranchNumber > len(branches)-1 || desiredBranchNumber == -1 {

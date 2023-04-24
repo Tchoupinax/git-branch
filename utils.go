@@ -15,6 +15,9 @@ import (
 
 func IsNumeric(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return err == nil
 }
 
@@ -35,7 +38,7 @@ func GenerateSpace(length int) string {
 }
 
 func ClearTerminal() {
-	// fmt.Print("\033[H\033[2J") // Clear the terminal
+	fmt.Print("\033[H\033[2J") // Clear the terminal
 }
 
 func StringInSlice(a string, list []string) bool {
@@ -78,13 +81,11 @@ func getGitRootPath() string {
 	return strings.TrimSpace(string(stdout))
 }
 
-func ChooseBranchNumber() int {
-	bold := color.New(color.Bold).SprintFunc()
+func ChooseBranchNumber(placeholder string) int {
+	input := read(placeholder)
 	fmt.Println()
-	fmt.Print(bold("✏️  Choose a branch : "))
 
-	input := read()
-	fmt.Println()
+	fmt.Println(input)
 
 	if !IsNumeric(input) {
 		fmt.Println()
@@ -99,8 +100,10 @@ func ChooseBranchNumber() int {
 	return intVar - 1
 }
 
-func read() string {
-	var input string
+func read(input string) string {
+	bold := color.New(color.Bold).SprintFunc()
+	fmt.Println()
+	fmt.Print(fmt.Sprintf("%s%s", bold("✏️  Choose a branch : "), input))
 
 	if err := keyboard.Open(); err != nil {
 		panic(err)
@@ -127,9 +130,15 @@ func read() string {
 			os.Exit(0)
 		}
 
-		fmt.Printf("%s", string(char))
-		input = fmt.Sprintf("%s%s", input, string(char))
-
+		if char == 0 {
+			input = input[:len(input)-1]
+			ClearTerminal()
+			fmt.Print(input)
+			return read(input)
+		} else {
+			fmt.Printf("%s", string(char))
+			input = fmt.Sprintf("%s%s", input, string(char))
+		}
 	}
 
 	return input

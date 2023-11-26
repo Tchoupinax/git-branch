@@ -38,7 +38,7 @@ func GenerateSpace(length int) string {
 }
 
 func ClearTerminal() {
-	fmt.Print("\033[H\033[2J") // Clear the terminal
+	fmt.Print("\033[H\033[2J")
 }
 
 func StringInSlice(a string, list []string) bool {
@@ -83,9 +83,6 @@ func getGitRootPath() string {
 
 func ChooseBranchNumber(placeholder string) int {
 	input := read(placeholder)
-	fmt.Println()
-
-	fmt.Println(input)
 
 	if !IsNumeric(input) {
 		fmt.Println()
@@ -106,6 +103,7 @@ func read(input string) string {
 	fmt.Print(fmt.Sprintf("%s%s", bold("✏️  Choose a branch : "), input))
 
 	if err := keyboard.Open(); err != nil {
+		fmt.Println(err)
 		panic(err)
 	}
 
@@ -129,12 +127,12 @@ func read(input string) string {
 
 			os.Exit(0)
 		}
-
+		
 		if char == 0 {
-			input = input[:len(input)-1]
-			ClearTerminal()
-			fmt.Print(input)
-			return read(input)
+			if (len(input)) > 0 {
+				input = input[:len(input)-1]
+				fmt.Print(fmt.Sprintf("\033[2K\r%s%s", bold("✏️  Choose a branch : "), input))
+			}
 		} else {
 			fmt.Printf("%s", string(char))
 			input = fmt.Sprintf("%s%s", input, string(char))

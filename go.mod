@@ -1,10 +1,10 @@
 module git-branch
 
-go 1.17
+go 1.21
 
 require (
 	github.com/caarlos0/timea.go v1.0.2
-	github.com/eiannone/keyboard v0.0.0-20200508000154-caf4b762e807
+	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
 	github.com/fatih/color v1.13.0
 	github.com/go-git/go-git/v5 v5.4.2
 )
@@ -26,6 +26,6 @@ require (
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/net v0.0.0-20210326060303-6b1517762897 // indirect
-	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
+	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )

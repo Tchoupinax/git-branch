@@ -18,6 +18,8 @@ import (
 func main() {
 	// Check if the version is asked by flag
 	cliCommandDisplayVersion(os.Args)
+	// Check if the helper is asked by flag
+	cliCommandDisplayHelp(os.Args)
 
 	rootpath := getGitRootPath()
 

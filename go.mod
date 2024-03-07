@@ -1,6 +1,6 @@
 module git-branch
 
-go 1.21
+go 1.22
 
 require (
 	github.com/caarlos0/timea.go v1.0.2

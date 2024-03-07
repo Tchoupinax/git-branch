@@ -87,7 +87,12 @@ func main() {
 
 		var count = 1
 		for branchIndex, branch := range branches[:int(math.Min(float64(len(branches)), 10))] {
-			s := timeago.Of(branch.commitedAt)
+			var s string
+			if (branch.commitedAt.String() != "0001-01-01 00:00:00 +0000 UTC") {
+				s = timeago.Of(branch.commitedAt)
+			} else {
+				s = "—"
+			}
 
 			space := " "
 			if branchIndex < 9 {

@@ -16,7 +16,7 @@ curl https://raw.githubusercontent.com/Tchoupinax/git-branch/master/scripts/inst
 
 ```
 brew tap tchoupinax/brew
-brew install tchoupinax/gb
+brew install tchoupinax/brew/gb
 ```
 
 ## Usage

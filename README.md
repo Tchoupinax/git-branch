@@ -21,7 +21,17 @@ brew install tchoupinax/brew/gb
 
 ## Usage
 
-Go in a git repository and type `gb` :). The list of all branches will appear, you can then swith to one by typing the number at the start of the line.
+Go in a git repository and type `gb` :).
+
+The list of all branches will appear, you can then swith to one by typing the number at the start of the line.
+
+Also, you can provide the number of the branch directly
+
+```bash
+gb $number
+```
+
+![Demo](.github/assets/demo.png "Display how the program works")
 
 ## Development
 

@@ -22,7 +22,6 @@ func main() {
 	cliCommandDisplayHelp(os.Args)
 
 	var deleteMode = StringInSlice("-d", os.Args[1:]) || StringInSlice("--delete", os.Args[1:])
-	fmt.Println(deleteMode)
 
 	rootpath := getGitRootPath()
 

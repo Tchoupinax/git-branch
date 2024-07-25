@@ -21,6 +21,9 @@ func main() {
 	// Check if the helper is asked by flag
 	cliCommandDisplayHelp(os.Args)
 
+	var deleteMode = StringInSlice("-d", os.Args[1:]) || StringInSlice("--delete", os.Args[1:])
+	fmt.Println(deleteMode)
+
 	rootpath := getGitRootPath()
 
 	if rootpath == "" {
@@ -82,13 +85,17 @@ func main() {
 
 	if !isTheFirstArgumentIsANumber {
 		fmt.Println("")
-		fmt.Println(bold("⚡️ Git branch"))
+		if deleteMode {
+			fmt.Println(bold("⚡️ Git branch"), red(bold("DELETE MODE")))
+		} else {
+			fmt.Println(bold("⚡️ Git branch"))
+		}
 		fmt.Println("")
 
 		var count = 1
 		for branchIndex, branch := range branches[:int(math.Min(float64(len(branches)), 10))] {
 			var s string
-			if (branch.commitedAt.String() != "0001-01-01 00:00:00 +0000 UTC") {
+			if branch.commitedAt.String() != "0001-01-01 00:00:00 +0000 UTC" {
 				s = timeago.Of(branch.commitedAt)
 			} else {
 				s = "—"
@@ -118,7 +125,7 @@ func main() {
 
 		desiredBranchNumber = tmpNumber - 1
 	} else {
-		desiredBranchNumber = ChooseBranchNumber("")
+		desiredBranchNumber = ChooseBranchNumber("", deleteMode)
 	}
 
 	if desiredBranchNumber > len(branches)-1 || desiredBranchNumber == -1 {
@@ -129,17 +136,29 @@ func main() {
 
 	desiredBranch := branches[desiredBranchNumber]
 
-	// worktree, _ := r.Worktree()
-	// error := worktree.Checkout(&git.CheckoutOptions{
-	// 	Branch: plumbing.NewBranchReferenceName(desiredBranch.name),
-	// })
+	if deleteMode {
+		// Temporary reclacement of the native command
+		cmd := exec.Command("git", "branch", "-D", desiredBranch.name)
+		cmd.Output()
 
-	// Temporary reclacement of the native command
-	cmd := exec.Command("git", "checkout", desiredBranch.name)
-	cmd.Output()
+		ClearTerminal()
 
-	ClearTerminal()
+		cyan := color.New(color.Bold, color.FgCyan).SprintFunc()
+		bgYellow := color.New(color.Bold, color.BgYellow).SprintFunc()
+		fmt.Println(bgYellow(cyan("branch ", desiredBranch.name, " deleted!")))
+	} else {
+		// worktree, _ := r.Worktree()
+		// error := worktree.Checkout(&git.CheckoutOptions{
+		// 	Branch: plumbing.NewBranchReferenceName(desiredBranch.name),
+		// })
 
-	purple := color.New(color.Bold, color.FgHiMagenta).SprintFunc()
-	fmt.Println(purple("Checkout the branch ", desiredBranch.name, "!"))
+		// Temporary reclacement of the native command
+		cmd := exec.Command("git", "checkout", desiredBranch.name)
+		cmd.Output()
+
+		ClearTerminal()
+
+		purple := color.New(color.Bold, color.FgHiMagenta).SprintFunc()
+		fmt.Println(purple("Checkout the branch ", desiredBranch.name, "!"))
+	}
 }

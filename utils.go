@@ -15,9 +15,6 @@ import (
 
 func IsNumeric(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		fmt.Println(err)
-	}
 	return err == nil
 }
 
@@ -81,8 +78,8 @@ func getGitRootPath() string {
 	return strings.TrimSpace(string(stdout))
 }
 
-func ChooseBranchNumber(placeholder string) int {
-	input := read(placeholder)
+func ChooseBranchNumber(placeholder string, deleteMode bool) int {
+	input := read(placeholder, deleteMode)
 
 	if !IsNumeric(input) {
 		fmt.Println()
@@ -97,10 +94,16 @@ func ChooseBranchNumber(placeholder string) int {
 	return intVar - 1
 }
 
-func read(input string) string {
+func read(input string, deleteMode bool) string {
 	bold := color.New(color.Bold).SprintFunc()
+	red := color.New(color.Bold, color.BgHiRed).SprintFunc()
+
 	fmt.Println()
-	fmt.Print(fmt.Sprintf("%s%s", bold("✏️  Choose a branch : "), input))
+	if deleteMode {
+		fmt.Print(fmt.Sprintf("%s%s", red(bold("✏️  Choose a branch : ")), input))
+	} else {
+		fmt.Print(fmt.Sprintf("%s%s", bold("✏️  Choose a branch : "), input))
+	}
 
 	if err := keyboard.Open(); err != nil {
 		fmt.Println(err)
@@ -127,11 +130,15 @@ func read(input string) string {
 
 			os.Exit(0)
 		}
-		
+
 		if char == 0 {
 			if (len(input)) > 0 {
 				input = input[:len(input)-1]
-				fmt.Print(fmt.Sprintf("\033[2K\r%s%s", bold("✏️  Choose a branch : "), input))
+				if deleteMode {
+					fmt.Print(fmt.Sprintf("\033[2K\r%s%s", red(bold("✏️  Choose a branch : ")), input))
+				} else {
+					fmt.Print(fmt.Sprintf("\033[2K\r%s%s", bold("✏️  Choose a branch : "), input))
+				}
 			}
 		} else {
 			fmt.Printf("%s", string(char))

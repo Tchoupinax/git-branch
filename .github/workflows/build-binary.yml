@@ -5,7 +5,7 @@ on:
     branches:
 
 jobs:
-  goreleaser:
+  build-binary:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
       - name: Compile the source
         uses: goreleaser/goreleaser-action@v6
         with:
-          version: latest
+          version: v2.1.0
           args: build --rm-dist --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

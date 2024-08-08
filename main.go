@@ -40,7 +40,7 @@ func main() {
 	branches := []Branch{}
 	refIter, _ := r.References()
 
-	refIter.ForEach(func(r *plumbing.Reference) error {
+	err := refIter.ForEach(func(r *plumbing.Reference) error {
 		var displayAll = StringInSlice("-a", os.Args[1:]) || StringInSlice("--all", os.Args[1:])
 		var displayRemoteBranches = StringInSlice("-r", os.Args[1:])
 		var displayTags = StringInSlice("-t", os.Args[1:])
@@ -51,6 +51,10 @@ func main() {
 
 		return nil
 	})
+
+	if err != nil {
+		panic(err)
+	}
 
 	var wg sync.WaitGroup
 	for i := range branches {
@@ -141,7 +145,10 @@ func main() {
 	if deleteMode {
 		// Temporary reclacement of the native command
 		cmd := exec.Command("git", "branch", "-D", desiredBranchName)
-		cmd.Output()
+		var _, cmdError = cmd.Output()
+		if cmdError != nil {
+			panic(cmdError)
+		}
 
 		ClearTerminal()
 
@@ -156,7 +163,10 @@ func main() {
 
 		// Temporary reclacement of the native command
 		cmd := exec.Command("git", "checkout", desiredBranchName)
-		cmd.Output()
+		var _, cmdError = cmd.Output()
+		if cmdError != nil {
+			panic(cmdError)
+		}
 
 		ClearTerminal()
 

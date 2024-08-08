@@ -84,7 +84,7 @@ func ChooseBranchNumber(placeholder string, deleteMode bool) int {
 	if !IsNumeric(input) {
 		fmt.Println()
 		red := color.New(color.Bold, color.BgHiRed).SprintFunc()
-		fmt.Printf(red("you should type a number"))
+		fmt.Printf("%s", red("you should type a number"))
 
 		fmt.Println()
 		os.Exit(1)
@@ -100,9 +100,9 @@ func read(input string, deleteMode bool) string {
 
 	fmt.Println()
 	if deleteMode {
-		fmt.Print(fmt.Sprintf("%s%s", red(bold("✏️  Choose a branch : ")), input))
+		fmt.Printf("%s%s", red(bold("✏️  Choose a branch : ")), input)
 	} else {
-		fmt.Print(fmt.Sprintf("%s%s", bold("✏️  Choose a branch : "), input))
+		fmt.Printf("%s%s", bold("✏️  Choose a branch : "), input)
 	}
 
 	if err := keyboard.Open(); err != nil {
@@ -135,9 +135,9 @@ func read(input string, deleteMode bool) string {
 			if (len(input)) > 0 {
 				input = input[:len(input)-1]
 				if deleteMode {
-					fmt.Print(fmt.Sprintf("\033[2K\r%s%s", red(bold("✏️  Choose a branch : ")), input))
+					fmt.Printf("\033[2K\r%s%s", red(bold("✏️  Choose a branch : ")), input)
 				} else {
-					fmt.Print(fmt.Sprintf("\033[2K\r%s%s", bold("✏️  Choose a branch : "), input))
+					fmt.Printf("\033[2K\r%s%s", bold("✏️  Choose a branch : "), input)
 				}
 			}
 		} else {

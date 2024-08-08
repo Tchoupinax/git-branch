@@ -1,4 +1,5 @@
-main
+branch
 dist
-vendor
 git-branch
+main
+vendor

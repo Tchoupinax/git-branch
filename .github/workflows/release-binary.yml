@@ -1,4 +1,4 @@
-name: Releases publication
+name: Release binary
 
 on:
   push:

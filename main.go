@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"sort"
 	"strconv"
+	"strings"
 	"sync"
 
 	timeago "github.com/caarlos0/timea.go"
@@ -133,18 +134,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	desiredBranch := branches[desiredBranchNumber]
+	// When option -a/--all is used to display remote branches,
+	// we want to remove origin/ prefix to have local branches on the computer
+	desiredBranchName := strings.Replace(branches[desiredBranchNumber].name, "origin/", "", 1)
 
 	if deleteMode {
 		// Temporary reclacement of the native command
-		cmd := exec.Command("git", "branch", "-D", desiredBranch.name)
+		cmd := exec.Command("git", "branch", "-D", desiredBranchName)
 		cmd.Output()
 
 		ClearTerminal()
 
 		cyan := color.New(color.Bold, color.FgCyan).SprintFunc()
 		bgYellow := color.New(color.Bold, color.BgYellow).SprintFunc()
-		fmt.Println(bgYellow(cyan("branch ", desiredBranch.name, " deleted!")))
+		fmt.Println(bgYellow(cyan("branch ", desiredBranchName, " deleted!")))
 	} else {
 		// worktree, _ := r.Worktree()
 		// error := worktree.Checkout(&git.CheckoutOptions{
@@ -152,12 +155,12 @@ func main() {
 		// })
 
 		// Temporary reclacement of the native command
-		cmd := exec.Command("git", "checkout", desiredBranch.name)
+		cmd := exec.Command("git", "checkout", desiredBranchName)
 		cmd.Output()
 
 		ClearTerminal()
 
 		purple := color.New(color.Bold, color.FgHiMagenta).SprintFunc()
-		fmt.Println(purple("Checkout the branch ", desiredBranch.name, "!"))
+		fmt.Println(purple("Checkout the branch ", desiredBranchName, "!"))
 	}
 }

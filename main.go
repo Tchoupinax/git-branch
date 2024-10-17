@@ -23,6 +23,15 @@ func main() {
 	cliCommandDisplayHelp(os.Args)
 
 	var deleteMode = StringInSlice("-d", os.Args[1:]) || StringInSlice("--delete", os.Args[1:])
+	var branchCount float64 = 10
+	if os.Getenv("GIT_BRANCH_COUNT") != "" {
+		value, err := strconv.Atoi(os.Getenv("GIT_BRANCH_COUNT"))
+		if err != nil {
+			CheckIfError(err)
+		} else {
+			branchCount = float64(value)
+		}
+	}
 
 	rootpath := getGitRootPath()
 
@@ -97,7 +106,7 @@ func main() {
 		fmt.Println("")
 
 		var count = 1
-		for branchIndex, branch := range branches[:int(math.Min(float64(len(branches)), 10))] {
+		for branchIndex, branch := range branches[:int(math.Min(float64(len(branches)), branchCount))] {
 			var s string
 			if branch.commitedAt.String() != "0001-01-01 00:00:00 +0000 UTC" {
 				s = timeago.Of(branch.commitedAt)

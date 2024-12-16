@@ -1,6 +1,6 @@
 module git-branch
 
-go 1.22
+go 1.23
 
 require (
 	github.com/caarlos0/timea.go v1.2.0
@@ -13,6 +13,7 @@ require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.0.0 // indirect
+	github.com/abusomani/go-palette v1.1.0 // indirect
 	github.com/cloudflare/circl v1.3.9 // indirect
 	github.com/cyphar/filepath-securejoin v0.3.1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect

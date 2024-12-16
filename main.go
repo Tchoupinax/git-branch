@@ -92,8 +92,8 @@ func main() {
 	var isTheFirstArgumentIsANumber = (len(os.Args) > 1 && IsNumeric(os.Args[1])) || (len(os.Args) > 2 && (IsNumeric(os.Args[2])))
 
 	bold := color.New(color.Bold).SprintFunc()
-	yellow := color.New(color.Bold, color.FgYellow).SprintFunc()
-	blue := color.New(color.Bold, color.FgBlue).SprintFunc()
+	yellow := color.New(color.Bold, color.FgHiGreen).SprintFunc()
+	blue := color.New(color.Bold, color.FgHiBlue).SprintFunc()
 	red := color.New(color.Italic, color.FgRed).SprintFunc()
 
 	if !isTheFirstArgumentIsANumber {

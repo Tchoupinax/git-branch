@@ -1,0 +1,30 @@
+name: Tests
+
+on:
+  pull_request:
+
+jobs:
+  perform-tests:
+    name: Unit tests to validate codebase
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [1.22, 1.23]
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.version }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Go vet check
+        run: go vet ./...
+
+      - name: Install ginkgo
+        run: go get github.com/onsi/ginkgo/v2/ginkgo
+
+      - name: Launch tests
+        run: go run github.com/onsi/ginkgo/v2/ginkgo -r --randomize-all --randomize-suites --race --trace -cover

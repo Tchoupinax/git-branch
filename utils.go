@@ -125,7 +125,11 @@ func read(input string, deleteMode bool) string {
 		}
 
 		if char == 0 && key == 3 { // Ctrl + C
-			keyboard.Close()
+			keyboardErr := keyboard.Close()
+			if keyboardErr != nil {
+				fmt.Println("Error when closing keyboard...")
+			}
+
 			fmt.Println("")
 
 			os.Exit(0)

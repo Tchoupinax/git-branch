@@ -55,7 +55,10 @@ func main() {
 		var displayTags = StringInSlice("-t", os.Args[1:])
 
 		if Criteria(r, displayRemoteBranches, displayTags, displayAll) {
-			branches = append(branches, Branch{name: r.Name().Short(), hash: r.Hash().String()})
+			// Ignore stash
+			if r.Name().Short() != "stash" {
+				branches = append(branches, Branch{name: r.Name().Short(), hash: r.Hash().String()})
+			}
 		}
 
 		return nil

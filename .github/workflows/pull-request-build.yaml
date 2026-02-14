@@ -1,9 +1,7 @@
-name: Release binary
+name: Build binary
 
 on:
-  push:
-    tags:
-      - "*"
+  pull_request:
 
 jobs:
   goreleaser:
@@ -12,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - id: vars
         run: |
@@ -20,20 +18,12 @@ jobs:
           echo "Using Go version ${{ steps.vars.outputs.go_version }}"
 
       - name: Set up Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ steps.vars.outputs.go_version }}
-
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ secrets.DEPLOY_APP_ID }}
-          private-key: ${{ secrets.DEPLOY_APP_KEY }}
 
       - name: Compile the source
         uses: goreleaser/goreleaser-action@v6
         with:
           version: "~> v2"
-          args: "release --clean"
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          args: "build --clean --snapshot"

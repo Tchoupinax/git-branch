@@ -1,8 +1,13 @@
 default: build
 
-# Read does not work with watch mode
 watch:
-  go build -o main *.go || exit 1 && ./main
+  go build -o git-branch *.go || exit 1 && ./git-branch
 
 build:
-  go build -o main *.go
+  go build -o git-branch *.go
+
+test:
+  go test ./...
+
+lint:
+  go fmt ./... && golangci-lint run

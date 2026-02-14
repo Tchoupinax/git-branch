@@ -7,8 +7,11 @@ import (
 	"github.com/fatih/color"
 )
 
-const Version string = "1.0.0"
-const BuildDate string = "2025-11-01"
+var (
+	version   string
+	buildDate string
+	commit    string
+)
 
 func cliCommandDisplayHelp(args []string) {
 	displayVersion := StringInSlice("-v", args[1:]) || StringInSlice("--version", args[1:])
@@ -20,8 +23,9 @@ func cliCommandDisplayHelp(args []string) {
 		fmt.Println()
 		fmt.Println(bold("⚡️ Git branch"))
 		fmt.Println()
-		fmt.Println("build date: ", bold(BuildDate))
-		fmt.Println("version:        ", bold(Version))
+		fmt.Println("build date: ", bold(version))
+		fmt.Println("version:    ", bold(buildDate))
+		fmt.Println("commit:     ", bold(commit))
 		fmt.Println()
 		fmt.Println("-v / --version    : display this help menu")
 		fmt.Println("-d / --delete     : enters the delete mode")

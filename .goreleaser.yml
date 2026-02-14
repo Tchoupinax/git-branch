@@ -1,0 +1,7 @@
+version: 2
+
+project_name: git-branch
+
+builds:
+  - ldflags:
+      - -s -w -X ssh-list/main.version={{.Version}} -X ssh-list/main.commit={{.FullCommit}} -X ssh-list/main.buildDate={{.Date}}

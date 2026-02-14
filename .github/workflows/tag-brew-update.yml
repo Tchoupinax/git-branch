@@ -16,13 +16,16 @@ jobs:
         with:
           app-id: ${{ secrets.DEPLOY_APP_ID }}
           private-key: ${{ secrets.DEPLOY_APP_KEY }}
-
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            homebrew-brew
+          
       # Documentation here
       # https://github.com/mislav/bump-homebrew-formula-action?tab=readme-ov-file#action-inputs
       - uses: mislav/bump-homebrew-formula-action@v3
         with:
           commit-message: "feat({{formulaName}}): publish version {{version}} 🤖"
-          formula-path: ssh-list.rb
+          formula-path: gb.rb
           homebrew-tap: Tchoupinax/homebrew-brew
         env:
           COMMITTER_TOKEN: ${{ steps.app-token.outputs.token }}

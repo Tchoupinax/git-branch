@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release project 🚀
-        uses: tchoupinax/repo-config/shared-actions/steps/golang/goreleaser-release@3df5047cbd8923c8083df349431385edfdda2d13
+        uses: tchoupinax/repo-config/shared-actions/steps/golang/goreleaser-release@v1.0.0
         with:
           appId: ${{ secrets.DEPLOY_APP_ID }}
           privateKey: ${{ secrets.DEPLOY_APP_KEY }}

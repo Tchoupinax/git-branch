@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Autodetect labels 🔍 
-        uses: tchoupinax/repo-config/shared-actions/dx/automatically-apply-labels@v0.1.0
+        uses: tchoupinax/repo-config/shared-actions/steps/dx/automatically-apply-labels@v0.1.0
         with:
           appId: ${{ secrets.DEPLOY_APP_ID }}
           privateKey: ${{ secrets.DEPLOY_APP_KEY }}

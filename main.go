@@ -17,10 +17,10 @@ import (
 )
 
 func main() {
-	// Check if the version is asked by flag
-	cliCommandDisplayVersion(os.Args)
 	// Check if the helper is asked by flag
 	cliCommandDisplayHelp(os.Args)
+	// Check if the version is asked by flag
+	cliCommandDisplayVersion(os.Args)
 
 	var deleteMode = StringInSlice("-d", os.Args[1:]) || StringInSlice("--delete", os.Args[1:])
 	var branchCount float64 = 10

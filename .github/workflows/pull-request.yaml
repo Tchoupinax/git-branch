@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check code quality 🫆
-        uses: tchoupinax/repo-config/shared-actions/golang/goreleaser-build-only@3df5047cbd8923c8083df349431385edfdda2d13
+        uses: tchoupinax/repo-config/shared-actions/golang/golangci@3df5047cbd8923c8083df349431385edfdda2d13
 
   build:
     name: Check build success 🦫

@@ -9,21 +9,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check code quality 🫆
-        uses: tchoupinax/repo-config/shared-actions/steps/golang/golangci@v0.1.0
+        uses: tchoupinax/repo-config/shared-actions/steps/golang/golangci@v0.1.1
 
   build:
     name: Check build success 🦫
     runs-on: ubuntu-latest
     steps:
       - name: Check build success 🦫
-        uses: tchoupinax/repo-config/shared-actions/steps/golang/goreleaser-build-only@v0.1.0
+        uses: tchoupinax/repo-config/shared-actions/steps/golang/goreleaser-build-only@v0.1.1
 
   labels:
     name: Autodetect labels 🔍 
     runs-on: ubuntu-latest
     steps:
       - name: Autodetect labels 🔍 
-        uses: tchoupinax/repo-config/shared-actions/steps/dx/automatically-apply-labels@v0.1.0
+        uses: tchoupinax/repo-config/shared-actions/steps/dx/automatically-apply-labels@v0.1.1
         with:
           appId: ${{ secrets.DEPLOY_APP_ID }}
           privateKey: ${{ secrets.DEPLOY_APP_KEY }}

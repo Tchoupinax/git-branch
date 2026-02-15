@@ -35,3 +35,4 @@ jobs:
         uses: fuxingloh/multi-labeler@v4
         env:
           github-token: ${{ steps.app-token.outputs.token }}
+          token: ${{ steps.app-token.outputs.token }}

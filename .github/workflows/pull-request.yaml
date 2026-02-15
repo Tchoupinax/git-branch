@@ -22,8 +22,17 @@ jobs:
     name: Autodetect labels 🔍 
     runs-on: ubuntu-latest
     steps:
-      - name: Autodetect labels 🔍 
-        uses: tchoupinax/repo-config/shared-actions/steps/dx/automatically-apply-labels@v0.1.0
+      - name: Clone repository
+        uses: actions/checkout@v6
+
+      - uses: actions/create-github-app-token@v2
+        id: app-token
         with:
-          appId: ${{ secrets.DEPLOY_APP_ID }}
-          privateKey: ${{ secrets.DEPLOY_APP_KEY }}
+          app-id: ${{ secrets.DEPLOY_APP_ID }}
+          private-key: ${{ secrets.DEPLOY_APP_KEY }}
+
+      # https://github.com/fuxingloh/multi-labeler
+      - name: labels
+        uses: fuxingloh/multi-labeler@v4
+        env:
+          github-token: ${{ steps.app-token.outputs.token }}

@@ -10,8 +10,8 @@ import (
 
 type Branch struct {
 	name       string
-	hash       string
 	commitedAt time.Time
+	hash       string
 }
 
 func (b *Branch) GetCommitterDateFromLogs() {

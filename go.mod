@@ -6,7 +6,7 @@ require (
 	github.com/caarlos0/timea.go v1.2.0
 	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
 	github.com/fatih/color v1.19.0
-	github.com/go-git/go-git/v5 v5.17.2
+	github.com/go-git/go-git/v5 v5.18.0
 )
 
 require (

@@ -67,6 +67,29 @@ func Criteria(r *plumbing.Reference, isRemote bool, isTag bool, displayAll bool)
 	return !r.Name().IsRemote() && !r.Name().IsTag()
 }
 
+func runGitCommand(args ...string) error {
+	cmd := exec.Command("git", args...)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		message := strings.TrimSpace(string(output))
+		if message != "" {
+			return fmt.Errorf("%s", message)
+		}
+		return err
+	}
+	return nil
+}
+
+func printGitError(err error) {
+	red := color.New(color.Bold, color.BgHiRed).SprintFunc()
+
+	fmt.Println()
+	for _, line := range strings.Split(strings.TrimSpace(err.Error()), "\n") {
+		fmt.Println(red(line))
+	}
+	fmt.Println()
+}
+
 func getGitRootPath() string {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 	stdout, err := cmd.Output()

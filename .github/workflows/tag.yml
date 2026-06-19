@@ -21,8 +21,51 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release]
     steps:
+      # mislav/bump-homebrew-formula-action (used by update-brew-registry) fails
+      # because GitHub returns HTTP 303 instead of 302 for tarball HEAD requests.
+      # https://github.com/mislav/bump-homebrew-formula-action/issues/340
       - name: Update Brew registry 👊
-        uses: tchoupinax/repo-config/shared-actions/steps/dx/update-brew-registry@v0
-        with:
-          patToken: ${{ secrets.BREW_COMITTER_PAT }}
-          formulaPath: gb.rb
+        env:
+          HOMEBREW_TOKEN: ${{ secrets.BREW_COMITTER_PAT }}
+          REF: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          VERSION="${REF#v}"
+          ARCHIVE_URL="https://github.com/${REPO}/archive/refs/tags/${REF}.tar.gz"
+
+          echo "::group::Compute tarball sha256"
+          SHA256="$(curl --fail --silent --location "$ARCHIVE_URL" | sha256sum | awk '{print $1}')"
+          test -n "$SHA256"
+          echo "sha256: $SHA256"
+          echo "::endgroup::"
+
+          echo "::group::Clone tap"
+          git clone \
+            --depth 1 \
+            "https://x-access-token:${HOMEBREW_TOKEN}@github.com/Tchoupinax/homebrew-brew.git" \
+            tap
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "::endgroup::"
+
+          echo "::group::Patch gb.rb"
+          sed -i -E \
+            -e "s|^([[:space:]]*url[[:space:]]+)\"[^\"]+\"|\1\"${ARCHIVE_URL}\"|" \
+            -e "s|^([[:space:]]*sha256[[:space:]]+)\"[^\"]+\"|\1\"${SHA256}\"|" \
+            gb.rb
+          git --no-pager diff gb.rb
+          echo "::endgroup::"
+
+          if git diff --quiet gb.rb; then
+            echo "Formula already at ${REF}; nothing to do."
+            exit 0
+          fi
+
+          echo "::group::Commit & push"
+          git add gb.rb
+          git commit -m "feat(gb): publish version ${VERSION} 🤖"
+          git push origin HEAD:master
+          echo "::endgroup::"

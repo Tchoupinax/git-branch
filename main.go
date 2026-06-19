@@ -4,7 +4,6 @@ import (
 	"fmt"
 	math "math"
 	"os"
-	"os/exec"
 	"sort"
 	"strconv"
 	"strings"
@@ -155,11 +154,9 @@ func main() {
 	desiredBranchName := strings.Replace(branches[desiredBranchNumber].name, "origin/", "", 1)
 
 	if deleteMode {
-		// Temporary reclacement of the native command
-		cmd := exec.Command("git", "branch", "-D", desiredBranchName)
-		var _, cmdError = cmd.Output()
-		if cmdError != nil {
-			panic(cmdError)
+		if err := runGitCommand("branch", "-D", desiredBranchName); err != nil {
+			printGitError(err)
+			os.Exit(1)
 		}
 
 		ClearTerminal()
@@ -173,11 +170,9 @@ func main() {
 		// 	Branch: plumbing.NewBranchReferenceName(desiredBranch.name),
 		// })
 
-		// Temporary reclacement of the native command
-		cmd := exec.Command("git", "checkout", desiredBranchName)
-		var _, cmdError = cmd.Output()
-		if cmdError != nil {
-			panic(cmdError)
+		if err := runGitCommand("checkout", desiredBranchName); err != nil {
+			printGitError(err)
+			os.Exit(1)
 		}
 
 		ClearTerminal()
